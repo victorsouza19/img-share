@@ -59,4 +59,19 @@ app.post("/users", async (req, res) => {
   }
 });
 
+app.delete("/users/:email", async (req, res) => {
+  let email = req.params.email;
+
+  let result = await UserService.Delete(email);
+
+  if(result.status){
+    res.status(200);
+    res.json({msg: 'User has been deleted.'});
+
+  }else{
+    res.status(500);
+    res.json({err: result.err});
+  }
+});
+
 module.exports = app;
