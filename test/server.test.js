@@ -1,6 +1,6 @@
 const app = require("../src/app");
-supertest = require('supertest'),
-request = supertest(app);
+let supertest = require('supertest');
+let request = supertest(app);
 
 test("A aplicação deve responder na porta 3131", () => {
 
@@ -9,7 +9,7 @@ test("A aplicação deve responder na porta 3131", () => {
     expect(status).toEqual(200);
 
   }).catch(err => {
-    fail(err);
+    throw new Error(err);
 
   });
   
