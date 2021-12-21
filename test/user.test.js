@@ -98,6 +98,32 @@ describe("User authenticate", () => {
     }).catch(err => {
       throw new Error(err);
 
-    })
+    });
+  });
+
+  it("Should not allow unregistered users to login", () => {
+    return request.post("/auth")
+    .send({email: "randommail@mail.com", password: "654321"})
+    .then(res => {
+      expect(res.statusCode).toEqual(403);
+      expect(res.body.err.email).toEqual("E-mail not found.");
+      
+    }).catch(err => {
+      throw new Error(err);
+
+    });
+  });
+
+  it("Should not login users whose password is wrong", () => {
+    return request.post("/auth")
+    .send({email: mainUser.email, password: "654321"})
+    .then(res => {
+      expect(res.statusCode).toEqual(403);
+      expect(res.body.err.password).toEqual("Wrong password.");
+      
+    }).catch(err => {
+      throw new Error(err);
+
+    });
   });
 });
