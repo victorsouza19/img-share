@@ -2,7 +2,9 @@ const express = require('express'),
 app = express(),
 mongoose = require("mongoose"),
 UserService = require("./services/UserService"),
-bcrypt = require('bcrypt');
+bcrypt = require('bcrypt'),
+jwt = require('jsonwebtoken'),
+jwtSecret = '3CEF4ED34704B1F';
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
@@ -72,6 +74,22 @@ app.delete("/users/:email", async (req, res) => {
     res.status(500);
     res.json({err: result.err});
   }
+});
+
+app.post("/auth", (req, res) => {
+  const {email, password} = req.body;
+
+  jwt.sign({email}, jwtSecret, {expiresIn: '48h'}, (err, token) => {
+    if(err){
+      console.log(err);
+      return res.status(500);
+
+    }else{
+      res.status(200);
+      return res.json({token});
+
+    }
+    });
 });
 
 module.exports = app;

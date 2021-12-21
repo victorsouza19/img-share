@@ -41,6 +41,10 @@ class UserService{
       
     }
   }
+
+  Auth(user){
+    
+  }
 }
 
 module.exports = new UserService();
