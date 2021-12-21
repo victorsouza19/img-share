@@ -85,3 +85,19 @@ describe("User register", () => {
   });
 
 });
+
+describe("User authenticate", () => {
+
+  it("Should be return a token when logging in", () => {
+    return request.post("/auth")
+    .send({email: mainUser.email, password: mainUser.password})
+    .then(res => {
+      expect(res.statusCode).toEqual(200);
+      expect(res.body.token).toBeDefined();
+      
+    }).catch(err => {
+      throw new Error(err);
+
+    })
+  });
+});
