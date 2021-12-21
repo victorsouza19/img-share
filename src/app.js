@@ -76,20 +76,40 @@ app.delete("/users/:email", async (req, res) => {
   }
 });
 
-app.post("/auth", (req, res) => {
+app.post("/auth", async (req, res) => {
   const {email, password} = req.body;
 
-  jwt.sign({email}, jwtSecret, {expiresIn: '48h'}, (err, token) => {
-    if(err){
-      console.log(err);
-      return res.status(500);
+  let user = await UserService.FindByEmail(email);
+
+  if(user.result != undefined){
+    let isPasswordRight = await bcrypt.compare(password, user.result.password);
+
+    if(!isPasswordRight){
+      res.status(403);
+      res.json({err: {password: 'Wrong password.'}});
 
     }else{
-      res.status(200);
-      return res.json({token});
-
+      jwt.sign({
+        email, 
+        name: user.result.name, 
+        id: user.result._id
+      }, jwtSecret, {expiresIn: '48h'}, (err, token) => {
+        if(err){
+          console.log(err);
+          return res.status(500);
+    
+        }else{
+          res.status(200);
+          return res.json({token});
+    
+        }
+        });
     }
-    });
+
+  }else{
+    res.status(403);
+    return res.json({err: {email: 'E-mail not found.'}});
+  }
 });
 
 module.exports = app;
